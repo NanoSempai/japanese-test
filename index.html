@@ -1,0 +1,762 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Числа и частицы</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one study sheet per もんだい (①–⑤) stacked on faint 原稿用紙 grid paper; hanko stamp marks a perfect section */
+:root {
+  --paper: #F5F7FB;
+  --grid: #E3E8F2;
+  --card: #FFFFFF;
+  --ink: #1D2742;
+  --muted: #5A6482;
+  --line: #D5DCEA;
+  --accent: #2C4CA3;
+  --accent-soft: #E6ECFA;
+  --ok: #24764A;
+  --ok-soft: #E2F3E9;
+  --bad: #C2352B;
+  --bad-soft: #FBE7E5;
+  --font-jp: "Klee One", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-ui: "Nunito", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #11151F; --grid: #1A2030; --card: #171D2B; --ink: #E4E8F3; --muted: #98A2BC;
+    --line: #2A3349; --accent: #8EA6EE; --accent-soft: #1F2945; --ok: #6CC895; --ok-soft: #16301F;
+    --bad: #F2847A; --bad-soft: #3A1C1A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #11151F; --grid: #1A2030; --card: #171D2B; --ink: #E4E8F3; --muted: #98A2BC;
+  --line: #2A3349; --accent: #8EA6EE; --accent-soft: #1F2945; --ok: #6CC895; --ok-soft: #16301F;
+  --bad: #F2847A; --bad-soft: #3A1C1A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+body {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.wrap {
+  max-width: 760px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+  display: flex; flex-direction: column; gap: 22px;
+}
+.jp { font-family: var(--font-jp); }
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 14px; }
+h1 { margin: 0; font-size: 1.9rem; font-weight: 800; letter-spacing: -0.01em; text-wrap: balance; }
+h1 small { display: block; font-family: var(--font-jp); font-size: 0.95rem; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; }
+.controls { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.seg { display: inline-flex; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+.seg button {
+  font: inherit; font-weight: 700; font-size: 0.92rem; border: 0; background: transparent; color: var(--muted);
+  padding: 7px 13px; border-radius: 7px; cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--card); }
+.seg button:focus-visible, .btn:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tally { font-size: 0.88rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.tally b { color: var(--ink); }
+.level-note { margin: 0; color: var(--muted); font-size: 0.95rem; max-width: 62ch; }
+
+section.sheet {
+  background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+  padding-block: 20px 22px; padding-inline: clamp(16px, 4vw, 28px);
+  display: flex; flex-direction: column; gap: 14px; position: relative;
+}
+.sheet-head { display: flex; flex-direction: column; gap: 2px; padding-right: 70px; }
+.sheet-head .eyebrow { font-family: var(--font-jp); font-weight: 600; color: var(--accent); letter-spacing: 0.06em; }
+.sheet-head h2 { margin: 0; font-size: 1.2rem; font-weight: 800; }
+.sheet-head p { margin: 0; color: var(--muted); font-size: 0.92rem; max-width: 62ch; }
+
+ol.qs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+ol.qs > li { display: grid; grid-template-columns: 2rem 1fr; gap: 4px 10px; padding-block: 12px; border-top: 1px dashed var(--line); }
+ol.qs > li:first-child { border-top: 0; }
+.num { font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.q-body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.prompt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.prompt .big { font-size: 1.35rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.prompt .big.jp { font-weight: 600; font-size: 1.25rem; }
+.prompt .kana { font-family: var(--font-jp); font-size: 2.4rem; line-height: 1.1; font-weight: 400; }
+.prompt .ru-q { font-size: 1.08rem; font-weight: 600; }
+.chip { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 800; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+input.ans, input.tr {
+  width: 100%; font: inherit; color: var(--ink);
+  background: transparent; border: 0; border-bottom: 2px solid var(--line); padding: 4px 2px; border-radius: 0;
+}
+input.ans { font-family: var(--font-jp); font-size: 1.15rem; }
+input.ans.short { max-width: 8rem; }
+input.ans[lang="ru"] { font-family: var(--font-ui); font-variant-numeric: tabular-nums; }
+input.tr { font-size: 0.95rem; border-bottom-width: 1px; }
+input.ans:focus, input.tr:focus { border-bottom-color: var(--accent); outline: none; }
+input.ans.ok { border-bottom-color: var(--ok); }
+input.ans.bad { border-bottom-color: var(--bad); }
+.preview { font-family: var(--font-jp); font-size: 0.95rem; color: var(--muted); min-height: 1.4em; }
+.fb { font-size: 0.92rem; display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+.fb .right { color: var(--ok); font-weight: 700; }
+.fb .wrong { color: var(--bad); font-weight: 700; }
+.fb .note { color: var(--muted); }
+.fb .jp { font-size: 1.05rem; }
+.credit { font: inherit; font-size: 0.82rem; font-weight: 700; color: var(--muted); background: transparent; border: 1px dashed var(--line); border-radius: 6px; padding: 3px 9px; cursor: pointer; margin-top: 2px; }
+.credit:hover { color: var(--ok); border-color: var(--ok); }
+
+.sentence { font-family: var(--font-jp); font-size: 1.2rem; line-height: 2.3; overflow-wrap: anywhere; }
+select.p {
+  font-family: var(--font-jp); font-size: 1.05rem; color: var(--ink); background: var(--accent-soft);
+  border: 1px solid var(--line); border-radius: 6px; padding: 1px 4px; margin-inline: 3px; cursor: pointer;
+}
+select.p.ok { background: var(--ok-soft); border-color: var(--ok); }
+select.p.bad { background: var(--bad-soft); border-color: var(--bad); }
+.fix { font-family: var(--font-jp); color: var(--bad); font-weight: 600; font-size: 0.95rem; margin-right: 2px; }
+.ru { color: var(--ink); font-size: 0.95rem; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn { font: inherit; font-weight: 800; font-size: 0.95rem; padding: 9px 18px; border-radius: 8px; cursor: pointer; border: 1px solid var(--accent); }
+.btn.primary { background: var(--accent); color: var(--card); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.score { font-weight: 800; font-variant-numeric: tabular-nums; }
+.legend { font-size: 0.85rem; color: var(--muted); }
+.legend .jp { color: var(--ink); font-size: 1rem; }
+
+.stamp {
+  position: absolute; top: 14px; right: 16px; width: 70px; height: 70px; border-radius: 50%;
+  border: 3px solid var(--bad); color: var(--bad); display: grid; place-items: center; text-align: center;
+  font-family: var(--font-jp); font-weight: 600; font-size: 0.74rem; line-height: 1.15; transform: rotate(-12deg);
+  opacity: 0.9; pointer-events: none; background: var(--card);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .stamp:not([hidden]) { animation: stamp 0.35s ease-out; }
+  @keyframes stamp { from { transform: rotate(-12deg) scale(1.6); opacity: 0; } to { transform: rotate(-12deg) scale(1); opacity: 0.9; } }
+}
+
+.total { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding-block: 14px; padding-inline: clamp(16px, 4vw, 28px); }
+.total .score { font-size: 1.1rem; }
+
+details.cheat { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding-block: 12px; padding-inline: clamp(16px, 4vw, 28px); }
+details.cheat summary { cursor: pointer; font-weight: 800; }
+.cheat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px 16px; margin-top: 12px; font-variant-numeric: tabular-nums; }
+.cheat-grid div { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px dotted var(--line); padding-block: 3px; }
+.cheat-grid .jp { font-size: 1.02rem; }
+.cheat h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 16px 0 0; }
+.cheat ul { margin: 6px 0 0; padding-left: 18px; }
+.cheat li { margin-block: 3px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1><small>Pre-level test・れんしゅう</small>Японский: пробный тест</h1>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Уровень">
+        <button id="lvl-easy" type="button" aria-pressed="false">Лёгкий</button>
+        <button id="lvl-medium" type="button" aria-pressed="true">Средний</button>
+        <button id="lvl-hard" type="button" aria-pressed="false">Сложный</button>
+      </div>
+      <div class="tally" id="tally">Сегодня: <b>0</b> из <b>0</b> верно</div>
+    </div>
+  </header>
+  <p class="level-note" id="level-note"></p>
+
+  <section class="sheet" id="sec-s1">
+    <div class="stamp" id="s1-stamp" hidden>よく<br>できました</div>
+    <div class="sheet-head">
+      <span class="eyebrow">もんだい①</span>
+      <h2>Распишите по чертам</h2>
+      <p>Напиши каждую букву на бумаге по чертам и посчитай их. Сюда введи число черт.</p>
+    </div>
+    <ol class="qs" id="s1-list"></ol>
+    <div class="actions">
+      <button class="btn primary" id="s1-check" type="button">Проверить</button>
+      <button class="btn ghost" id="s1-new" type="button">Другие буквы</button>
+      <span class="score" id="s1-score"></span>
+    </div>
+  </section>
+
+  <section class="sheet" id="sec-s2">
+    <div class="stamp" id="s2-stamp" hidden>よく<br>できました</div>
+    <div class="sheet-head">
+      <span class="eyebrow">もんだい②</span>
+      <h2>Напишите числа</h2>
+      <p id="s2-desc">Пиши хираганой или латиницей (<span class="jp">sanbyaku</span> → <span class="jp">さんびゃく</span>). Пробелы не важны. Enter переходит к следующему полю.</p>
+    </div>
+    <ol class="qs" id="s2-list"></ol>
+    <div class="actions">
+      <button class="btn primary" id="s2-check" type="button">Проверить</button>
+      <button class="btn ghost" id="s2-new" type="button">Новые числа</button>
+      <span class="score" id="s2-score"></span>
+    </div>
+  </section>
+
+  <section class="sheet" id="sec-s3">
+    <div class="stamp" id="s3-stamp" hidden>よく<br>できました</div>
+    <div class="sheet-head">
+      <span class="eyebrow">もんだい③</span>
+      <h2>Вставьте частицы и переведите</h2>
+      <p>Выбери частицу для каждого пропуска (× — частица не нужна). Перевод напиши в строке ниже, после проверки сравни его с образцом.</p>
+    </div>
+    <div class="legend">Варианты: <span class="jp">は　が　を　と　の</span>　и　×</div>
+    <ol class="qs" id="s3-list"></ol>
+    <div class="actions">
+      <button class="btn primary" id="s3-check" type="button">Проверить</button>
+      <button class="btn ghost" id="s3-new" type="button">Новые предложения</button>
+      <span class="score" id="s3-score"></span>
+    </div>
+  </section>
+
+  <section class="sheet" id="sec-s4">
+    <div class="stamp" id="s4-stamp" hidden>よく<br>できました</div>
+    <div class="sheet-head">
+      <span class="eyebrow">もんだい④</span>
+      <h2>Составьте вопросы к ответам</h2>
+      <p>Напиши вопрос, на который это ответ. Можно латиницей, знак вопроса не важен. Если твой вариант тоже правильный, нажми «Засчитать».</p>
+    </div>
+    <ol class="qs" id="s4-list"></ol>
+    <div class="actions">
+      <button class="btn primary" id="s4-check" type="button">Проверить</button>
+      <button class="btn ghost" id="s4-new" type="button">Другие ответы</button>
+      <span class="score" id="s4-score"></span>
+    </div>
+  </section>
+
+  <section class="sheet" id="sec-s5">
+    <div class="stamp" id="s5-stamp" hidden>よく<br>できました</div>
+    <div class="sheet-head">
+      <span class="eyebrow">もんだい⑤</span>
+      <h2>Переведите на японский</h2>
+      <p>Хираганой, катаканой или латиницей. <span class="jp">わたしは</span> в начале можно опустить. Если твой вариант тоже правильный, нажми «Засчитать».</p>
+    </div>
+    <ol class="qs" id="s5-list"></ol>
+    <div class="actions">
+      <button class="btn primary" id="s5-check" type="button">Проверить</button>
+      <button class="btn ghost" id="s5-new" type="button">Другие фразы</button>
+      <span class="score" id="s5-score"></span>
+    </div>
+  </section>
+
+  <div class="total">
+    <span class="score" id="total-score">Итого за вариант: проверь разделы</span>
+    <div class="actions">
+      <button class="btn primary" id="check-all" type="button">Проверить всё</button>
+      <button class="btn ghost" id="new-all" type="button">Новый вариант</button>
+    </div>
+  </div>
+
+  <details class="cheat">
+    <summary>Шпаргалка</summary>
+    <h3>Особые чтения</h3>
+    <div class="cheat-grid">
+      <div><span>4</span><span class="jp">よん</span></div>
+      <div><span>7</span><span class="jp">なな</span></div>
+      <div><span>9</span><span class="jp">きゅう</span></div>
+      <div><span>10</span><span class="jp">じゅう</span></div>
+      <div><span>300</span><span class="jp">さんびゃく</span></div>
+      <div><span>600</span><span class="jp">ろっぴゃく</span></div>
+      <div><span>800</span><span class="jp">はっぴゃく</span></div>
+      <div><span>1000</span><span class="jp">せん</span></div>
+      <div><span>3000</span><span class="jp">さんぜん</span></div>
+      <div><span>8000</span><span class="jp">はっせん</span></div>
+      <div><span>10 000</span><span class="jp">いちまん</span></div>
+      <div><span>100 000</span><span class="jp">じゅうまん</span></div>
+    </div>
+    <h3>Возраст</h3>
+    <div class="cheat-grid">
+      <div><span>1 год</span><span class="jp">いっさい</span></div>
+      <div><span>8 лет</span><span class="jp">はっさい</span></div>
+      <div><span>10 лет</span><span class="jp">じゅっさい</span></div>
+      <div><span>20 лет</span><span class="jp">はたち</span></div>
+      <div><span>21 год</span><span class="jp">にじゅういっさい</span></div>
+      <div><span>28 лет</span><span class="jp">にじゅうはっさい</span></div>
+    </div>
+    <h3>Частицы</h3>
+    <ul>
+      <li><span class="jp">は</span>: тема. <span class="jp">わたし<b>は</b>…</span></li>
+      <li><span class="jp">が</span>: перед <span class="jp">すき / だいすき / できます</span>. Также после вопросительного слова-подлежащего: <span class="jp">だれ<b>が</b>…</span></li>
+      <li><span class="jp">を</span>: объект перед <span class="jp">ください</span></li>
+      <li><span class="jp">と</span>: «и» между существительными</li>
+      <li><span class="jp">の</span>: «чей». <span class="jp">あなた<b>の</b> すきな…</span>, <span class="jp">たなかさん<b>の</b>…</span></li>
+      <li><span class="jp">も</span>: «тоже». <span class="jp">にほんご<b>も</b> できます</span></li>
+      <li>×: перед <span class="jp">です</span> после возраста, вопросительного слова или <span class="jp">だいすき</span></li>
+    </ul>
+    <h3>Вопросы</h3>
+    <ul>
+      <li><span class="jp">なんさいですか</span>: сколько лет?</li>
+      <li><span class="jp">なにじんですか</span>: какой национальности?</li>
+      <li><span class="jp">だれですか</span>: кто?</li>
+      <li><span class="jp">すきな たべものは なんですか</span>: какая любимая еда?</li>
+      <li><span class="jp">〜が できますか</span>: умеешь / знаешь …?</li>
+      <li><span class="jp">Aですか、Bですか</span>: A или B?</li>
+      <li><span class="jp">あまり すきではありません</span>: не очень люблю</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+(function () {
+  // ---------- romaji → hiragana ----------
+  const T = {};
+  const rows = { k:'かきくけこ', g:'がぎぐげご', s:'さしすせそ', z:'ざじずぜぞ', t:'たちつてと', d:'だぢづでど',
+    n:'なにぬねの', h:'はひふへほ', b:'ばびぶべぼ', p:'ぱぴぷぺぽ', m:'まみむめも', r:'らりるれろ' };
+  'aiueo'.split('').forEach((v, i) => { T[v] = 'あいうえお'[i]; for (const c in rows) T[c + v] = rows[c][i]; });
+  Object.assign(T, { ya:'や', yu:'ゆ', yo:'よ', wa:'わ', wo:'を', shi:'し', chi:'ち', tsu:'つ', fu:'ふ', ji:'じ',
+    sha:'しゃ', shu:'しゅ', sho:'しょ', cha:'ちゃ', chu:'ちゅ', cho:'ちょ', ja:'じゃ', ju:'じゅ', jo:'じょ',
+    jya:'じゃ', jyu:'じゅ', jyo:'じょ', '-':'ー' });
+  ['k','g','s','z','t','n','h','b','p','m','r','c'].forEach(c => {
+    const base = c === 'c' ? 'ち' : rows[c][1];
+    T[c + 'ya'] = base + 'ゃ'; T[c + 'yu'] = base + 'ゅ'; T[c + 'yo'] = base + 'ょ';
+  });
+  const isV = ch => ch !== undefined && 'aiueo'.includes(ch);
+  function toKana(str) {
+    const s = str.toLowerCase(); let out = ''; let i = 0;
+    while (i < s.length) {
+      const c = s[i];
+      if (!/[a-z'\-]/.test(c)) { out += c; i++; continue; }
+      if (c === 'n') {
+        const nx = s[i + 1];
+        if (nx === undefined || (!isV(nx) && nx !== 'y')) {
+          out += 'ん';
+          i += (nx === "'" || (nx === 'n' && !isV(s[i + 2]) && s[i + 2] !== 'y')) ? 2 : 1;
+          continue;
+        }
+      }
+      if (c !== 'n' && !isV(c) && /[a-z]/.test(c) && (s[i + 1] === c || (c === 't' && s[i + 1] === 'c'))) { out += 'っ'; i++; continue; }
+      let hit = false;
+      for (let L = 3; L >= 1; L--) {
+        const k = s.substr(i, L);
+        if (T[k]) { out += T[k]; i += L; hit = true; break; }
+      }
+      if (!hit) { out += c; i++; }
+    }
+    return out.replace(/[ァ-ヶ]/g, m => String.fromCharCode(m.charCodeAt(0) - 0x60));
+  }
+  // Comparison form: kana only, no spaces/punctuation, わ/は and を/お merged so romaji "wa"/"o" particles match.
+  const canon = s => toKana(s.replace(/私/g, 'わたし').replace(/彼/g, 'かれ'))
+    .replace(/[\s　、。・,.?？!！]/g, '').replace(/わ/g, 'は').replace(/を/g, 'お');
+
+  // Answer patterns: "a|b" alternatives, "[x|y]" choice, "(x)" optional.
+  function splitTop(s) {
+    const parts = []; let d = 0, cur = '';
+    for (const ch of s) {
+      if (ch === '[' || ch === '(') d++;
+      if (ch === ']' || ch === ')') d--;
+      if (ch === '|' && d === 0) { parts.push(cur); cur = ''; } else cur += ch;
+    }
+    parts.push(cur); return parts;
+  }
+  function closeIdx(s, i) { let d = 0; for (let j = i; j < s.length; j++) { if (s[j] === '[' || s[j] === '(') d++; else if (s[j] === ']' || s[j] === ')') { d--; if (d === 0) return j; } } return s.length; }
+  function expand(p) { return splitTop(p).flatMap(seq); }
+  function seq(s) {
+    let res = [''], i = 0;
+    while (i < s.length) {
+      const c = s[i];
+      if (c === '[' || c === '(') {
+        const j = closeIdx(s, i); let opts = expand(s.slice(i + 1, j));
+        if (c === '(') opts = [''].concat(opts);
+        res = res.flatMap(r => opts.map(o => r + o)); i = j + 1;
+      } else { res = res.map(r => r + c); i++; }
+    }
+    return res;
+  }
+  function dispSeq(s) {
+    let out = '', i = 0;
+    while (i < s.length) {
+      const c = s[i];
+      if (c === '[' || c === '(') { const j = closeIdx(s, i); out += dispSeq(splitTop(s.slice(i + 1, j))[0]); i = j + 1; }
+      else { out += c; i++; }
+    }
+    return out;
+  }
+  const display = p => dispSeq(splitTop(p)[0]);
+
+  // ---------- helpers ----------
+  const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? few : many; };
+  const fmt = n => n.toLocaleString('ru-RU');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+  const $ = id => document.getElementById(id);
+
+  // ---------- ① strokes ----------
+  const STROKES = { あ:3, い:2, う:2, え:2, お:3, か:3, き:4, く:1, け:3, こ:2, さ:3, し:1, す:2, せ:3, そ:1, た:4, ち:2, つ:1, て:1, と:2,
+    な:4, に:3, ぬ:2, ね:2, の:1, は:3, ひ:1, ふ:4, へ:1, ほ:4, ま:3, み:2, む:3, め:2, も:3, や:3, ゆ:2, よ:2, ら:2, り:2, る:1, れ:2, ろ:1, わ:2, を:3, ん:1 };
+  const KANA_LVL = {
+    easy: 'いうこしつてとのへくりろるんひそ'.split(''),
+    medium: 'あかきさすたちにはまみもやゆよらわれめけ'.split(''),
+    hard: 'ほふなぬねむをおあきたまもやけはせ'.split(''),
+  };
+  function genS1(level) {
+    return shuffle(KANA_LVL[level]).slice(0, level === 'hard' ? 6 : 5).map(k => ({
+      kind: 'digits', short: true, label: 'число черт', placeholder: 'черт',
+      show: `<span class="kana" lang="ja">${k}</span>`,
+      answers: [String(STROKES[k])], display: `${STROKES[k]} ${plural(STROKES[k], 'черта', 'черты', 'черт')}`,
+    }));
+  }
+
+  // ---------- ② numbers ----------
+  const DIG = ['', 'いち', 'に', 'さん', 'よん', 'ご', 'ろく', 'なな', 'はち', 'きゅう'];
+  function u10k(n) {
+    const s = [], th = Math.floor(n / 1000), h = Math.floor(n / 100) % 10, t = Math.floor(n / 10) % 10, u = n % 10;
+    if (th) s.push({ 1:'せん', 3:'さんぜん', 8:'はっせん' }[th] || DIG[th] + 'せん');
+    if (h) s.push({ 1:'ひゃく', 3:'さんびゃく', 6:'ろっぴゃく', 8:'はっぴゃく' }[h] || DIG[h] + 'ひゃく');
+    let tu = '';
+    if (t) tu += (t === 1 ? '' : DIG[t]) + 'じゅう';
+    if (u) tu += DIG[u];
+    if (tu) s.push(tu);
+    return s;
+  }
+  function numKana(n) {
+    const man = Math.floor(n / 10000), s = [];
+    if (man) s.push(u10k(man).join('') + 'まん');
+    return s.concat(u10k(n % 10000));
+  }
+  function ageKana(n) {
+    if (n === 20) return ['はたち', 'にじゅっさい', 'にじっさい'];
+    const t = Math.floor(n / 10), u = n % 10;
+    const tens = t === 0 ? '' : (t === 1 ? '' : DIG[t]) + 'じゅう';
+    if (u === 0) { const st = t === 1 ? '' : DIG[t]; return [st + 'じゅっさい', st + 'じっさい']; }
+    if (u === 1) return [tens + 'いっさい'];
+    if (u === 8) return [tens + 'はっさい', tens + 'はちさい'];
+    return [tens + DIG[u] + 'さい'];
+  }
+  const TRICKY = [1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 8, 9, 9];
+  function hardNum(digits) {
+    let n = pick([1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 8, 9]);
+    for (let i = 1; i < digits; i++) n = n * 10 + (Math.random() < 0.3 ? 0 : pick(TRICKY));
+    return n;
+  }
+  const kanaItem = n => { const segs = numKana(n); return { kind: 'jp', label: 'в хирагану', numeric: true, show: `<span class="big">${fmt(n)}</span>`, answers: [segs.join('')], display: segs.join(' ') }; };
+  const digitItem = n => ({ kind: 'digits', label: 'в цифры', placeholder: 'цифрами', show: `<span class="big jp" lang="ja">${numKana(n).join(' ')}</span>`, answers: [String(n)], display: fmt(n) });
+  const ageItem = n => { const a = ageKana(n); return { kind: 'jp', label: 'возраст', numeric: true, show: `<span class="big">${n} ${plural(n, 'год', 'года', 'лет')}</span>`, answers: a, display: a[0], alts: a.slice(1) }; };
+  function genS2(level) {
+    if (level === 'easy') return [
+      kanaItem(rand(11, 49)), kanaItem(rand(50, 99)),
+      kanaItem(pick([3, 6, 8]) * 100 + rand(0, 99)), kanaItem(rand(101, 999)), kanaItem(rand(1001, 9999)),
+    ];
+    if (level === 'medium') return [
+      kanaItem(rand(11, 99)), kanaItem(pick([3, 6, 8]) * 100 + rand(0, 99)), kanaItem(rand(101, 999)),
+      kanaItem(pick([3, 8, rand(1, 9)]) * 1000 + rand(0, 999)), kanaItem(rand(10001, 99999)), kanaItem(rand(100001, 999999)),
+    ];
+    const ages = shuffle([11, 18, 20, 21, 28, 30, 31, 38, 40, 48, 50, 61, 68, 70, 81, 88, 90, 19, 24, 37, 99]);
+    return [
+      kanaItem(hardNum(6)), kanaItem(hardNum(6)), kanaItem(hardNum(5)), kanaItem(hardNum(4)),
+      digitItem(hardNum(6)), digitItem(hardNum(5)), ageItem(ages[0]), ageItem(ages[1]),
+    ];
+  }
+  const SPECIAL = [
+    ['さんびゃく', '300 = さんびゃく'], ['ろっぴゃく', '600 = ろっぴゃく'], ['はっぴゃく', '800 = はっぴゃく'],
+    ['さんぜん', '3000 = さんぜん'], ['はっせん', '8000 = はっせん'], ['きゅう', '9 = きゅう (с длинной う)'],
+    ['じゅう', '10 = じゅう (с длинной う)'], ['よん', '4 = よん'], ['なな', '7 = なな'],
+    ['いっさい', '1 год = いっさい'], ['はっさい', '8 лет = はっさい'], ['じゅっさい', '10 лет = じゅっさい'], ['はたち', '20 лет = はたち'],
+  ];
+
+  // ---------- ③ particles ----------
+  const PARTS = {
+    easy: [
+      ['わたし_せんせい です。', [['は']], 'Я учитель.'],
+      ['ねこ_すきです。', [['が']], 'Я люблю кошек.'],
+      ['すし_ください。', [['を']], 'Суши, пожалуйста.'],
+      ['たまご_ください。', [['を']], 'Яйцо, пожалуйста.'],
+      ['かれ_いしゃ です。', [['は']], 'Он врач.'],
+      ['えいが_だいすきです。', [['が']], 'Обожаю кино.'],
+      ['にほんご_できます。', [['が']], 'Я знаю японский.'],
+      ['あなた_いしゃ ですか。', [['は']], 'Вы врач?'],
+      ['たなかさん_ねこ です。', [['の']], 'Это кошка Танаки.'],
+      ['いぬ_ねこ_すきです。', [['と'], ['が']], 'Я люблю собак и кошек.'],
+      ['にく_さかな_ください。', [['と'], ['を']], 'Мясо и рыбу, пожалуйста.'],
+      ['わたし_おかね です。', [['の']], 'Это мои деньги.'],
+    ],
+    medium: [
+      ['ラーメン_ぎょうざ_ください。', [['と'], ['を']], 'Рамэн и гёдза, пожалуйста.'],
+      ['わたし_ねこ_だいすき_です。', [['は'], ['が'], ['×']], 'Я обожаю кошек.'],
+      ['たなかさん_すきな きせつ_なつ です。', [['の'], ['は']], 'Любимое время года Танаки — лето.'],
+      ['やまださん_にじゅうごさい_です。', [['は'], ['×']], 'Ямаде 25 лет.'],
+      ['わたし_やさい_くだもの_すきです。', [['は'], ['と'], ['が']], 'Я люблю овощи и фрукты.'],
+      ['おちゃ_みず_ください。', [['と'], ['を']], 'Зелёный чай и воду, пожалуйста.'],
+      ['あなた_スポーツ_すきですか。', [['は'], ['が']], 'Ты любишь спорт?'],
+      ['やまもとさん_ちゅうごくご_すこし できます。', [['は'], ['が']], 'Ямамото немного знает китайский.'],
+      ['あのひと_だれ_ですか。', [['は'], ['×']], 'Кто тот человек?'],
+      ['これ_やまださん_おかね です。', [['は'], ['の']], 'Это деньги Ямады.'],
+      ['だれ_かんこくご_できますか。', [['が'], ['が']], 'Кто знает корейский?'],
+      ['わたし_あめ_あまり すきではありません。', [['は'], ['が']], 'Я не очень люблю дождь.'],
+      ['あなた_すきな のみもの_なん_ですか。', [['の'], ['は'], ['×']], 'Какой твой любимый напиток?'],
+      ['わたし_どくしょ_あまり すきではありません。', [['は'], ['が']], 'Я не очень люблю читать.'],
+      ['すし_おちゃ_ください。', [['と'], ['を']], 'Суши и зелёный чай, пожалуйста.'],
+    ],
+    hard: [
+      ['たなかさん_すきな たべもの_おやこどん_かつどん_です。', [['の'], ['は'], ['と'], ['×']], 'Любимая еда Танаки — оякодон и кацудон.'],
+      ['やまださん_いぬ_ねこ_だいすき_です。', [['は'], ['と'], ['が'], ['×']], 'Ямада обожает собак и кошек.'],
+      ['だれ_えいご_にほんご_できますか。', [['が'], ['と'], ['が']], 'Кто знает английский и японский?'],
+      ['せんせい_すきな きせつ_ふゆ_ですか、はる_ですか。', [['の'], ['は'], ['×'], ['×']], 'Любимое время года учителя — зима или весна?'],
+      ['あのひと_やまもとさん_です。かれ_にじゅうはっさい_です。', [['は'], ['×'], ['は'], ['×']], 'Тот человек — Ямамото. Ему 28 лет.'],
+      ['コーヒー_おかし_たまご_ください。', [['と'], ['と'], ['を']], 'Кофе, сладости и яйцо, пожалуйста.'],
+      ['なんにん_ちゅうごくご_できますか。', [['が'], ['が']], 'Сколько человек знают китайский?'],
+      ['これ_たなかさん_おかね_ですか。', [['は'], ['の'], ['×']], 'Это деньги Танаки?'],
+      ['やまださん_ショッピング_えいが_すきです。', [['は'], ['と'], ['が']], 'Ямада любит шоппинг и кино.'],
+      ['わたし_はる_あき_すきです。なつ_あまり すきではありません。', [['は'], ['と'], ['が'], ['は', 'が']], 'Я люблю весну и осень. Лето не очень люблю.'],
+      ['あのひと_だれ_ですか。たなかさん_せんせい_ですか。', [['は'], ['×'], ['の'], ['×']], 'Кто тот человек? Учитель Танаки?'],
+      ['あなた_すきな バンド_なん_ですか。', [['の'], ['は'], ['×']], 'Какая твоя любимая группа?'],
+      ['わたし_おんがく_どくしょ_だいすき_です。', [['は'], ['と'], ['が'], ['×']], 'Я обожаю музыку и чтение.'],
+      ['やまもとさん_ねこ_すきですか、いぬ_すきですか。', [['は'], ['が'], ['が']], 'Ямамото любит кошек или собак?'],
+      ['ぎょうざ_ラーメン_おちゃ_ください。', [['と'], ['と'], ['を']], 'Гёдза, рамэн и зелёный чай, пожалуйста.'],
+    ],
+  };
+  const WHY = {
+    'は': 'は отмечает тему предложения.',
+    'が': 'が стоит перед すき / できます и после вопросительного слова-подлежащего (だれが, なんにんが).',
+    'を': 'を отмечает то, что просят: …を ください.',
+    'と': 'と означает «и» между существительными.',
+    'の': 'の означает «чей»: あなたの すきな…, たなかさんの…',
+    '×': 'Перед です после возраста, вопросительного слова или だいすき частица не нужна.',
+  };
+
+  // ---------- ④ questions to answers ----------
+  const AGE_Q = '(あなたは )[なんさい|おいくつ]ですか';
+  const QS = {
+    easy: [
+      ['わたしは じゅうきゅうさい です。', AGE_Q],
+      ['わたしは ロシアじん です。', '(あなたは )[なにじん|なんじん]ですか'],
+      ['はい、すしが すきです。', '(あなたは )すしが すきですか'],
+      ['あのひとは たなかさん です。', '(あのひとは )だれですか|あのかたは どなたですか'],
+      ['いいえ、いしゃ では ありません。', '(あなたは )いしゃですか'],
+      ['はい、にほんごが できます。', '(あなたは )にほんごが できますか'],
+      ['はい、ねこが だいすきです。', '(あなたは )ねこが [すき|だいすき]ですか'],
+    ],
+    medium: [
+      ['わたしは はたち です。', AGE_Q],
+      ['かれは にほんじん です。', '(かれは )[なにじん|なんじん]ですか'],
+      ['あのひとは たなかさん です。', 'あのひとは だれですか|あのかたは どなたですか'],
+      ['いいえ、せんせい では ありません。いしゃ です。', '(あなたは )せんせいですか'],
+      ['はい、わたしは えいごが すこし できます。', '(あなたは )えいごが できますか'],
+      ['わたしの すきな たべものは すし です。', '(あなたの )すきな たべものは なんですか'],
+      ['いいえ、コーヒーは あまり すきではありません。', '(あなたは )コーヒーが すきですか'],
+      ['たなかさんは にじゅうごさい です。', 'たなかさんは [なんさい|おいくつ]ですか'],
+    ],
+    hard: [
+      ['やまださんの すきな のみものは こうちゃ です。', 'やまださんの すきな のみものは なんですか'],
+      ['いいえ、わたしは さっかでは ありません。がか です。', '(あなたは )さっかですか'],
+      ['さんにんが にほんごが できます。', 'なんにんが にほんごが できますか'],
+      ['わたしの すきな きせつは なつ です。', '(あなたの )すきな きせつは [なん|いつ]ですか'],
+      ['わたしは さんじゅういっさい です。', AGE_Q],
+      ['いいえ、ねこは あまり すきではありません。いぬが すきです。', '(あなたは )ねこが すきですか'],
+      ['やまもとさんが かんこくごが できます。', 'だれが かんこくごが できますか'],
+      ['いいえ、たなかさんは スポーツが あまり すきではありません。', 'たなかさんは スポーツが すきですか'],
+    ],
+  };
+
+  // ---------- ⑤ translate to Japanese ----------
+  const NEG = 'あまり すき[では|じゃ][ありません|ないです]';
+  const TR = {
+    easy: [
+      ['Я люблю кошек.', '(わたしは )ねこが すきです'],
+      ['Суши, пожалуйста.', 'すしを ください'],
+      ['Я врач.', '(わたしは )いしゃです'],
+      ['Вы учитель?', '(あなたは )せんせいですか'],
+      ['Чай и воду, пожалуйста.', 'おちゃと みずを ください'],
+      ['Я знаю японский.', '(わたしは )にほんごが できます'],
+      ['Я обожаю музыку.', '(わたしは )おんがくが だいすきです'],
+      ['Он японец.', 'かれは にほんじんです'],
+    ],
+    medium: [
+      ['Я очень люблю собак.', '(わたしは )いぬが だいすきです'],
+      ['Твоё любимое время года — весна или осень?', '(あなたの )すきな きせつは はるですか あきですか'],
+      ['Я не очень люблю уборку.', '(わたしは )そうじが ' + NEG],
+      ['Мне, пожалуйста, кофе и сладости.', 'コーヒーと おかしを ください'],
+      ['Вы писатель или художник?', '(あなたは )さっかですか がかですか'],
+      ['Любимый напиток Танаки — чёрный чай.', 'たなかさんの すきな のみものは こうちゃです'],
+      ['Я не очень люблю читать.', '(わたしは )どくしょが ' + NEG],
+      ['Мне, пожалуйста, чай и данго.', 'おちゃと だんごを ください'],
+    ],
+    hard: [
+      ['Я говорю по-английски. Японский тоже знаю.', '(わたしは )えいごが できます にほんごも できます'],
+      ['Я не очень люблю мясо. Рыбу люблю.', '(わたしは )にく[が|は] ' + NEG + ' さかなが すきです'],
+      ['Ты любишь кошек или собак?', '(あなたは )ねこが すきですか いぬが すきですか'],
+      ['Мне, пожалуйста, оякодон и зелёный чай.', 'おやこどんと おちゃを ください'],
+      ['Любимая еда Ямамото-сан — рамэн.', 'やまもとさんの すきな たべものは ラーメンです'],
+      ['Кто знает корейский?', 'だれが かんこくごが できますか'],
+      ['Сколько человек знают китайский?', 'なんにんが ちゅうごくごが できますか'],
+      ['Я люблю спорт. Музыку тоже люблю.', '(わたしは )スポーツが すきです おんがくも すきです'],
+    ],
+  };
+
+  function patternItem(show, pattern, label) {
+    return { kind: 'jp', label, credit: true, show, answers: expand(pattern).map(canon), display: display(pattern) };
+  }
+  const genS4 = level => shuffle(QS[level]).slice(0, 5).map(([a, p]) =>
+    patternItem(`<span class="big jp" lang="ja">${esc(a)}</span>`, p, 'вопрос'));
+  const genS5 = level => shuffle(TR[level]).slice(0, 5).map(([ru, p]) =>
+    patternItem(`<span class="ru-q">${esc(ru)}</span>`, p, 'на японский'));
+
+  // ---------- generic input sections (①②④⑤) ----------
+  const tally = { right: 0, total: 0 };
+  const results = {};
+  function updateTally() { $('tally').innerHTML = `Сегодня: <b>${tally.right}</b> из <b>${tally.total}</b> верно`; }
+  function updateTotal() {
+    const ids = Object.keys(results);
+    if (!ids.length) { $('total-score').textContent = 'Итого за вариант: проверь разделы'; return; }
+    const r = ids.reduce((a, k) => a + results[k].right, 0), t = ids.reduce((a, k) => a + results[k].total, 0);
+    $('total-score').textContent = `Итого за вариант: ${r} из ${t}` + (ids.length < 5 ? ` (проверено разделов: ${ids.length} из 5)` : '');
+  }
+  function markSection(id, right, total) {
+    const first = !results[id];
+    if (first) { tally.right += right; tally.total += total; }
+    else { tally.right += right - results[id].right; }
+    results[id] = { right, total };
+    $(id + '-score').textContent = `${right} из ${total}`;
+    $(id + '-stamp').hidden = right !== total;
+    updateTally(); updateTotal();
+  }
+
+  let level = 'medium';
+  try { const l = localStorage.getItem('jp-drill-level'); if (['easy', 'medium', 'hard'].includes(l)) level = l; } catch (e) {}
+
+  const inputSecs = {
+    s1: { gen: genS1, items: [] },
+    s2: { gen: genS2, items: [] },
+    s4: { gen: genS4, items: [] },
+    s5: { gen: genS5, items: [] },
+  };
+
+  function renderInputs(id) {
+    const sec = inputSecs[id];
+    sec.items = sec.gen(level);
+    delete results[id];
+    $(id + '-score').textContent = ''; $(id + '-stamp').hidden = true;
+    $(id + '-list').innerHTML = sec.items.map((it, i) => `
+      <li><span class="num">${i + 1}.</span><div class="q-body">
+        <div class="prompt">${it.show}<span class="chip">${it.label}</span></div>
+        <input class="ans${it.short ? ' short' : ''}" id="${id}-in-${i}" lang="${it.kind === 'digits' ? 'ru' : 'ja'}" ${it.kind === 'digits' ? 'inputmode="numeric"' : ''} autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${it.placeholder || 'ответ'}">
+        ${it.kind === 'digits' ? '' : `<div class="preview" id="${id}-pv-${i}"></div>`}
+        <div class="fb" id="${id}-fb-${i}"></div>
+      </div></li>`).join('');
+    sec.items.forEach((it, i) => {
+      const inp = $(`${id}-in-${i}`);
+      inp.addEventListener('input', () => {
+        if (it.kind !== 'digits') $(`${id}-pv-${i}`).textContent = /[a-z]/i.test(inp.value) ? '→ ' + toKana(inp.value) : '';
+      });
+      inp.addEventListener('keydown', e => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        const nx = $(`${id}-in-${i + 1}`);
+        if (nx) nx.focus(); else checkInputs(id);
+      });
+    });
+    updateTotal();
+  }
+
+  function checkInputs(id) {
+    const sec = inputSecs[id];
+    let right = 0;
+    sec.items.forEach((it, i) => {
+      const inp = $(`${id}-in-${i}`), fb = $(`${id}-fb-${i}`);
+      const user = it.kind === 'digits' ? inp.value.replace(/\D/g, '') : canon(inp.value);
+      const answers = it.kind === 'digits' ? it.answers : it.answers.map(canon);
+      const ok = user !== '' && answers.includes(user);
+      it.ok = ok;
+      inp.classList.toggle('ok', ok); inp.classList.toggle('bad', !ok);
+      if (ok) { right++; fb.innerHTML = `<span class="right">Верно</span>` + (it.credit && it.display.replace(/\s/g, '') !== inp.value.replace(/\s/g, '') ? `<span class="note">Образец: <span class="jp">${esc(it.display)}</span></span>` : ''); return; }
+      const notes = it.numeric ? SPECIAL.filter(([k]) => it.answers[0].includes(k) && !user.includes(canon(k))).slice(0, 2).map(([, t]) => t) : [];
+      fb.innerHTML = `<span class="wrong">${user === '' ? 'Нет ответа.' : 'Неверно.'} Правильно: <span class="${it.kind === 'digits' ? '' : 'jp'}">${esc(it.display)}</span></span>`
+        + (it.alts && it.alts.length ? `<span class="note">Также можно: <span class="jp">${it.alts.join(', ')}</span></span>` : '')
+        + notes.map(t => `<span class="note">Помни: <span class="jp">${t}</span></span>`).join('')
+        + (it.credit && user !== '' ? `<button class="credit" type="button" data-sec="${id}" data-i="${i}">Мой вариант тоже верный, засчитать</button>` : '');
+    });
+    markSection(id, right, sec.items.length);
+  }
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.credit');
+    if (!b) return;
+    const id = b.dataset.sec, i = +b.dataset.i, it = inputSecs[id].items[i];
+    if (it.ok) return;
+    it.ok = true;
+    $(`${id}-in-${i}`).classList.replace('bad', 'ok');
+    b.outerHTML = `<span class="right">Засчитано</span>`;
+    markSection(id, results[id].right + 1, results[id].total);
+  });
+
+  // ---------- ③ section ----------
+  let partItems = [];
+  function renderParts() {
+    partItems = shuffle(PARTS[level]).slice(0, level === 'easy' ? 5 : level === 'medium' ? 6 : 7);
+    delete results.s3;
+    $('s3-score').textContent = ''; $('s3-stamp').hidden = true;
+    const opts = ['', 'は', 'が', 'を', 'と', 'の', '×'].map(o => `<option value="${o}">${o || '…'}</option>`).join('');
+    $('s3-list').innerHTML = partItems.map(([text], i) => {
+      const bits = text.split('_');
+      const html = bits.map((b, j) => esc(b) + (j < bits.length - 1 ? `<span id="fx-${i}-${j}"></span><select class="p" id="p-${i}-${j}" aria-label="Пропуск ${j + 1}">${opts}</select>` : '')).join('');
+      return `<li><span class="num">${i + 1}.</span><div class="q-body">
+        <div class="sentence" lang="ja">${html}</div>
+        <input class="tr" id="tr-${i}" autocomplete="off" placeholder="Перевод на русский">
+        <div class="fb" id="pfb-${i}"></div>
+      </div></li>`;
+    }).join('');
+    updateTotal();
+  }
+  function checkParts() {
+    let right = 0, total = 0;
+    partItems.forEach(([, ans, ru], i) => {
+      let allOk = true, firstWrong = null;
+      ans.forEach((acc, j) => {
+        const sel = $(`p-${i}-${j}`), fx = $(`fx-${i}-${j}`);
+        const ok = acc.includes(sel.value);
+        total++; if (ok) right++;
+        sel.classList.toggle('ok', ok); sel.classList.toggle('bad', !ok);
+        fx.innerHTML = ok ? '' : `<span class="fix">${acc[0]}</span>`;
+        if (!ok) { allOk = false; if (!firstWrong) firstWrong = acc[0]; }
+      });
+      $(`pfb-${i}`).innerHTML = (allOk ? `<span class="right">Частицы верно</span>` : `<span class="note">${esc(WHY[firstWrong])}</span>`)
+        + `<span class="note">Перевод: <span class="ru">${esc(ru)}</span></span>`;
+    });
+    markSection('s3', right, total);
+  }
+
+  // ---------- level & wiring ----------
+  const NOTES = {
+    easy: 'Лёгкий: простые буквы, числа до 9 999, одна-две частицы в предложении, короткие вопросы и фразы.',
+    medium: 'Средний: как настоящий тест. Числа до 999 999, предложения с 2–3 пропусками, вопросы и переводы уровня теста.',
+    hard: 'Сложный: сложные буквы, числа с нулями, обратный перевод и возраст, длинные предложения с が/は, の, と и も.',
+  };
+  function renderAll() {
+    Object.keys(inputSecs).forEach(renderInputs);
+    renderParts();
+  }
+  function setLevel(l) {
+    level = l;
+    try { localStorage.setItem('jp-drill-level', l); } catch (e) {}
+    ['easy', 'medium', 'hard'].forEach(k => $('lvl-' + k).setAttribute('aria-pressed', k === l));
+    $('level-note').textContent = NOTES[l];
+    $('s2-desc').innerHTML = l === 'hard'
+      ? 'Большие числа с нулями, обратный перевод в цифры и возраст с <span class="jp">さい</span>. Можно писать латиницей. Enter переходит к следующему полю.'
+      : 'Пиши хираганой или латиницей (<span class="jp">sanbyaku</span> → <span class="jp">さんびゃく</span>). Пробелы не важны. Enter переходит к следующему полю.';
+    renderAll();
+  }
+
+  ['easy', 'medium', 'hard'].forEach(k => $('lvl-' + k).addEventListener('click', () => setLevel(k)));
+  Object.keys(inputSecs).forEach(id => {
+    $(id + '-check').addEventListener('click', () => checkInputs(id));
+    $(id + '-new').addEventListener('click', () => renderInputs(id));
+  });
+  $('s3-check').addEventListener('click', checkParts);
+  $('s3-new').addEventListener('click', renderParts);
+  $('check-all').addEventListener('click', () => { checkInputs('s1'); checkInputs('s2'); checkParts(); checkInputs('s4'); checkInputs('s5'); });
+  $('new-all').addEventListener('click', () => { renderAll(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  setLevel(level);
+})();
+</script>
+
+</body>
+</html>
